@@ -30,9 +30,25 @@ namespace StringLenghtCounterBot
         /// <returns></returns>
         async Task HandleUpdateAsync(ITelegramBotClient client, Update update, CancellationToken cancellationToken)
         {
+
             if (update.Type == UpdateType.CallbackQuery)
             {
-                    await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, $"Длина сообщения: {update.Message.Text.Length} знаков", cancellationToken: cancellationToken); return;
+                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Отправлено что-то не то", cancellationToken: cancellationToken);
+                return;
+            }
+
+            if (update.Type == UpdateType.Message)
+            {
+                if (update.Message!.Type == MessageType.Text)
+                {
+                    await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, $"Длина сообщения: {update.Message.Text.Length} знаков", cancellationToken: cancellationToken);
+                    return;
+                }
+                else
+                {
+                    await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, $"Отправлено что-то не то", cancellationToken: cancellationToken);
+                    return;
+                }
             }
         }
 
