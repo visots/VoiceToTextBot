@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using System.Text;
 using Telegram.Bot;
 
-namespace VoiceToTextBot
+namespace StringLenghtCounterBot
 {
     internal class Program
     {
@@ -26,7 +26,7 @@ namespace VoiceToTextBot
         static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ITelegramBotClient>(privider => new TelegramBotClient(_botToken));
-            
+
             services.AddHostedService<Bot>();
         }
     }

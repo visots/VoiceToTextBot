@@ -10,7 +10,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace VoiceToTextBot
+namespace StringLenghtCounterBot
 {
     internal class Bot : BackgroundService
     {
@@ -51,12 +51,13 @@ namespace VoiceToTextBot
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task HandleErrorAsync (ITelegramBotClient client, Exception exception, CancellationToken cancellationToken)
+        Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken cancellationToken)
         {
             var errorMessage = exception switch
             {
                 ApiRequestException apiRequestException =>
-                $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}", _ => exception.ToString()
+                $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+                _ => exception.ToString()
             };
 
             Console.WriteLine(errorMessage);
@@ -69,7 +70,7 @@ namespace VoiceToTextBot
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _telegramBotClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync, 
+            _telegramBotClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync,
                 new ReceiverOptions() { AllowedUpdates = { } }, cancellationToken: stoppingToken);
             Console.WriteLine("Бот запущен");
             return Task.CompletedTask;
