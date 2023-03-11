@@ -7,7 +7,7 @@ namespace StringLenghtCounterBot
 {
     internal class Program
     {
-        private static string _botToken = "5817286574:AAFwdZUxJN4ZQP2MZJ_aqmvCiecTOktW_yk";
+        private static string _botToken = "6150513213:AAHaxTeA3sxYCgE_vDT1Wo_on66vbkEqagQ";
 
         public static async Task Main()
         {

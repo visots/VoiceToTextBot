@@ -32,15 +32,7 @@ namespace StringLenghtCounterBot
         {
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Нажата кнопка", cancellationToken: cancellationToken);
-                return;
-            }
-
-            if (update.Type == UpdateType.Message)
-            {
-                Console.WriteLine($"Получено сообщение: {update.Message.Text}");
-                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Сообщение отправлено", cancellationToken: cancellationToken);
-                return;
+                    await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, $"Длина сообщения: {update.Message.Text.Length} знаков", cancellationToken: cancellationToken); return;
             }
         }
 
