@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -17,9 +12,22 @@ namespace VoiceToTextBot
     {
         private ITelegramBotClient _telegramBotClient;
 
-        public Bot(ITelegramBotClient telegramBotClient)
+        private DefaultMessageController _defaultMessageController;
+        private TextMessageController _textMessageController;
+        private VoiceMessageController _voiceMessageController;
+        private InlineKeyboardController _inlineKeyboardController;
+
+        public Bot(ITelegramBotClient telegramBotClient,
+                    DefaultMessageController messageController,
+                    TextMessageController textMessageController,
+                    VoiceMessageController voiceMessageController,
+                    InlineKeyboardController keyboardController)
         {
             _telegramBotClient = telegramBotClient;
+            _defaultMessageController = messageController;
+            _textMessageController = textMessageController;
+            _voiceMessageController = voiceMessageController;
+            _inlineKeyboardController = keyboardController;
         }
 
         /// <summary>
@@ -33,15 +41,24 @@ namespace VoiceToTextBot
         {
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Нажата кнопка", cancellationToken: cancellationToken);
+                await _inlineKeyboardController.Handle(update.CallbackQuery,cancellationToken);
                 return;
             }
 
-            if (update.Type == UpdateType.Message)
+            if(update.Type == UpdateType.Message)
             {
-                Console.WriteLine($"Получено сообщение: {update.Message.Text}");
-                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Сообщение отправлено", cancellationToken: cancellationToken);
-                return;
+                switch(update.Message!.Type)
+                {
+                    case MessageType.Text:
+                        await _textMessageController.Handle(update.Message, cancellationToken);
+                        break;
+                    case MessageType.Voice:
+                        await _voiceMessageController.Handle(update.Message, cancellationToken);
+                        break;
+                    default:
+                        await _defaultMessageController.Handle(update.Message, cancellationToken);
+                        break;
+                }
             }
         }
 
@@ -52,12 +69,13 @@ namespace VoiceToTextBot
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task HandleErrorAsync (ITelegramBotClient client, Exception exception, CancellationToken cancellationToken)
+        Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken cancellationToken)
         {
             var errorMessage = exception switch
             {
                 ApiRequestException apiRequestException =>
-                $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}", _ => exception.ToString()
+                $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+                _ => exception.ToString()
             };
 
             Console.WriteLine(errorMessage);
@@ -70,7 +88,7 @@ namespace VoiceToTextBot
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _telegramBotClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync, 
+            _telegramBotClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync,
                 new ReceiverOptions() { AllowedUpdates = { } }, cancellationToken: stoppingToken);
             Console.WriteLine("Бот запущен");
             return Task.CompletedTask;

@@ -21,6 +21,7 @@ namespace VoiceToTextBot.Controllers
         {
             Console.WriteLine($"Контроллер {GetType().Name }");
             await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, "Получено текстовое сообщение", cancellationToken: ct);
+            Console.WriteLine(message.Text);
         }
     }
 }
