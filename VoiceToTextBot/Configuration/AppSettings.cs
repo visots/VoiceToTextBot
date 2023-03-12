@@ -29,5 +29,10 @@ namespace VoiceToTextBot.Configuration
         /// Целевой формат аудио
         /// </summary>
         public string OutputAudioFormat { get; set; }
+
+        /// <summary>
+        /// Битрейт
+        /// </summary>
+        public string InputAudioBitrate { get; set; }
     }
 }
