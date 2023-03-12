@@ -35,6 +35,7 @@ namespace VoiceToTextBot
             services.AddTransient<InlineKeyboardController>();
 
             services.AddSingleton<IStorage, MemoryStorage>();
+            services.AddSingleton<IFileHandler, AudioFileHandler>();
 
             services.AddSingleton<ITelegramBotClient>(privider => new TelegramBotClient(appSettings.BotToken));
 
@@ -45,7 +46,11 @@ namespace VoiceToTextBot
         {
             return new AppSettings()
             {
-                BotToken = "5817286574:AAFwdZUxJN4ZQP2MZJ_aqmvCiecTOktW_yk"
+                BotToken = "5817286574:AAFwdZUxJN4ZQP2MZJ_aqmvCiecTOktW_yk",
+                DownloadsFolder = "C:\\Users\\visot\\Downloads",
+                AudioFileName = "audio",
+                InputAudioFormat = "ogg",
+                OutputAudioFormat = "wav"
             };
         }
     }
