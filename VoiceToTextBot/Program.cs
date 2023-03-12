@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System.Text;
 using Telegram.Bot;
+using VoiceToTextBot.Controllers;
 
 namespace VoiceToTextBot
 {
@@ -25,6 +26,11 @@ namespace VoiceToTextBot
 
         static void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<DefaultMessageController>();
+            services.AddTransient<TextMessageController>();
+            services.AddTransient<VoiceMessageController>();
+            services.AddTransient<InlineKeyboardController>();
+
             services.AddSingleton<ITelegramBotClient>(privider => new TelegramBotClient(_botToken));
             
             services.AddHostedService<Bot>();

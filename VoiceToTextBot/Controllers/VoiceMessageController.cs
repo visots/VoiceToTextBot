@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace VoiceToTextBot.Controllers
 {
@@ -14,6 +15,12 @@ namespace VoiceToTextBot.Controllers
         public VoiceMessageController(ITelegramBotClient telegramBotClient)
         {
             this._telegramBotClient = telegramBotClient;
+        }
+
+        public async Task Handle(Message message, CancellationToken ct)
+        {
+            Console.WriteLine($"Контроллер {GetType().Name}");
+            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, $"Получено голосовое сообщение", cancellationToken: ct);
         }
     }
 }
