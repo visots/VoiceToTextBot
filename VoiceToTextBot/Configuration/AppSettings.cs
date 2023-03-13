@@ -33,6 +33,6 @@ namespace VoiceToTextBot.Configuration
         /// <summary>
         /// Битрейт
         /// </summary>
-        public string InputAudioBitrate { get; set; }
+        public float InputAudioBitrate { get; set; }
     }
 }

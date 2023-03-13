@@ -46,11 +46,13 @@ namespace VoiceToTextBot
         {
             return new AppSettings()
             {
-                BotToken = "5817286574:AAFwdZUxJN4ZQP2MZJ_aqmvCiecTOktW_yk",
+                BotToken = "5674123306:AAGYCqg_wU-ekMvJRoe3X-Ty8cZELfjeg1o",
                 DownloadsFolder = "C:\\Users\\visot\\Downloads",
                 AudioFileName = "audio",
                 InputAudioFormat = "ogg",
-                OutputAudioFormat = "wav"
+                OutputAudioFormat = "wav",
+                InputAudioBitrate =50000
+                
             };
         }
     }

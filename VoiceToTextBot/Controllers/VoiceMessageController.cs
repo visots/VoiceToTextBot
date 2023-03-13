@@ -31,14 +31,17 @@ namespace VoiceToTextBot.Controllers
 
             await _fileHandler.Download(fileId, ct);
 
-            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, "Голосовое сообщение загружено", cancellationToken: ct);
+            //await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, "Голосовое сообщение загружено", cancellationToken: ct);
 
             Console.WriteLine("Файл сохранен "+ fileId);
 
             string languageCode = _storage.GetSession(message.Chat.Id).LanguageCode;
-            _fileHandler.Process(languageCode);
+            var result =  _fileHandler.Process(languageCode);
 
-            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, "Конвертация сообщения", cancellationToken: ct);
+            if (string.IsNullOrEmpty(result))
+                result = "Не удалось распознать";
+
+            await _telegramBotClient.SendTextMessageAsync(message.Chat.Id, result, cancellationToken: ct);
         }
     }
 }
