@@ -2,6 +2,9 @@
 using Microsoft.Extensions.Hosting;
 using System.Text;
 using Telegram.Bot;
+using StringLenghtCounterBot.Controllers;
+using VoiceToTextBot.Services;
+using StringLenghtCounterBot.Services;
 
 namespace StringLenghtCounterBot
 {
@@ -26,6 +29,13 @@ namespace StringLenghtCounterBot
         static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ITelegramBotClient>(privider => new TelegramBotClient(_botToken));
+            //Подключение хранилища
+            services.AddSingleton<IStorage, MemoryStorage>();
+            //Подключения обработчика строк
+            services.AddSingleton<IStringProcessor, StringProcessor>();
+
+            services.AddTransient<InlineKeyboardController>();
+            services.AddTransient<TextMessageController>();
 
             services.AddHostedService<Bot>();
         }

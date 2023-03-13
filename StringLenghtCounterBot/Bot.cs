@@ -1,9 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StringLenghtCounterBot.Controllers;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -15,10 +11,14 @@ namespace StringLenghtCounterBot
     internal class Bot : BackgroundService
     {
         private ITelegramBotClient _telegramBotClient;
+        private InlineKeyboardController _keyboardConroller;
+        private TextMessageController _textMessageController;
 
-        public Bot(ITelegramBotClient telegramBotClient)
+        public Bot(ITelegramBotClient telegramBotClient, InlineKeyboardController keyboardConroller, TextMessageController textMessageController)
         {
             _telegramBotClient = telegramBotClient;
+            _keyboardConroller = keyboardConroller;
+            _textMessageController = textMessageController;
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace StringLenghtCounterBot
 
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, "Отправлено что-то не то", cancellationToken: cancellationToken);
+                await _keyboardConroller.Handle(update.CallbackQuery, cancellationToken);
                 return;
             }
 
@@ -41,8 +41,7 @@ namespace StringLenghtCounterBot
             {
                 if (update.Message!.Type == MessageType.Text)
                 {
-                    await _telegramBotClient.SendTextMessageAsync(update.Message.Chat.Id, $"Длина сообщения: {update.Message.Text.Length} знаков", cancellationToken: cancellationToken);
-                    return;
+                    await _textMessageController.Handle(update.Message, cancellationToken);
                 }
                 else
                 {
